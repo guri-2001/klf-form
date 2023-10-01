@@ -5,6 +5,7 @@ import React, { useState } from 'react'
 import { signIn } from 'next-auth/react'
 
 const LoginForm = () => {
+    // const [mcnumber, setMcNumber] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
@@ -48,6 +49,15 @@ const LoginForm = () => {
                     <div >
 
                         <form onSubmit={handleSubmit}>
+                            {/* <div >
+                                <input
+                                    type='text'
+                                    placeholder='Mc number'
+                                    value={mcnumber}
+                                    onChange={e => setMcNumber(e.target.value)}
+                                />
+                            </div> */}
+                            
                             <div >
                                 <input
                                     type='email'

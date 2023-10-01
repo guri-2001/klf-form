@@ -3,6 +3,10 @@ import mongoose, { Schema, models } from "mongoose";
 
 
 const userSchema = new Schema({
+    mcnumber: {
+        type: String,
+        required: true,
+    },
     name: {
         type: String,
         required: true,

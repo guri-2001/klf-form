@@ -1,9 +1,11 @@
 "use client"
+import axios from 'axios';
 import Link from 'next/link'
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react'
 
 const RegisterForm = () => {
+    const [mcnumber, setMcNumber] = useState("");
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -11,15 +13,78 @@ const RegisterForm = () => {
 
     const router = useRouter()
 
+    console.log(mcnumber);
+
+    // const handleSubmit = async (e) => {
+    //     e.preventDefault();
+
+    //     if (!name || !email || !password) {
+    //         setError("All field are required");
+    //         return;
+    //     }
+
+
+    //     try {
+
+    //         const resUserExists = await fetch("api/userExists", {
+    //             method: "POST",
+    //             headers: {
+    //                 "Content_type": "application/json",
+    //             },
+    //             body: JSON.stringify({ email })
+    //         });
+
+    //         const { user } = await resUserExists.json();
+
+    //         if (user) {
+    //             setError("User already Exists");
+    //             return;
+    //         }
+
+
+    //         const res = await fetch("api/register", {
+    //             method: "POST",
+    //             headers: {
+    //                 "Content-Type": "application/json"
+    //             },
+    //             body: JSON.stringify({
+    //                 mcnumber, name, email, password
+    //             })
+    //         })
+
+    //         if (res.ok) {
+    //             setEmail("");
+    //             setName("");
+    //             setPassword("");
+
+    //             router.push("/login")
+    //         } else {
+    //             console.log("User registeration failed");
+    //         }
+
+
+
+
+    //         console.log("response", res);
+    //         // console.log("res", resUserExists);
+
+    //     } catch (error) {
+    //         console.log("Error during registeration", error);
+    //     }
+    // }
+
+    const newObj = {
+        mcnumber,
+        name,
+        email,
+        password
+    }
+
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (!name || !email || !password) {
-            setError("All field are required");
-            return;
-        }
-
-
+        console.log(newObj);
         try {
 
             const resUserExists = await fetch("api/userExists", {
@@ -27,48 +92,35 @@ const RegisterForm = () => {
                 headers: {
                     "Content_type": "application/json",
                 },
-                body: JSON.stringify({ email })
+                body: JSON.stringify({ mcnumber })
             });
 
             const { user } = await resUserExists.json();
 
-            if (user) {
-                setError("User already Exists");
+            if (!user) {
+                // setError("User already Exists");
+                alert('First you have to set your Career Information')
                 return;
+            }else {
+                router.push('/login')
             }
 
+            console.log(resUserExists);
 
-            const res = await fetch("api/register", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    name, email, password
+            const res = axios.post('/api/newNote', newObj)
+                .then(() => {
+                    alert('New note Added successfully')
                 })
-            })
-
-            if (res.ok) {
-                setEmail("");
-                setName("");
-                setPassword("");
-
-                router.push("/login")
-            } else {
-                console.log("User registeration failed");
-            }
-
-
-
-
-            console.log("response", res);
-            // console.log("res", resUserExists);
-
         } catch (error) {
-            console.log("Error during registeration", error);
+            console.log(error);
         }
-    }
 
+        // router.push('/login')
+        setName("")
+        setEmail("")
+        alert('Added successfully')
+
+    }
 
     return (
         <div style={{ background: "skyblue", display: "flex", justifyContent: "center", alignItems: "center", minHeight: "100vh", fontFamily: "arial" }}>
@@ -87,10 +139,20 @@ const RegisterForm = () => {
                         <form onSubmit={handleSubmit}>
                             <div>
                                 <input
+                                    value={mcnumber}
+                                    type='text'
+                                    placeholder='mc number'
+
+                                    onChange={(e) => { setMcNumber(e.target.value) }}
+                                />
+                            </div>
+
+                            <div>
+                                <input
                                     value={name}
                                     type='text'
                                     placeholder='Username'
-                                    
+
                                     onChange={(e) => { setName(e.target.value) }}
                                 />
                             </div>
@@ -100,7 +162,7 @@ const RegisterForm = () => {
                                     value={email}
                                     type='email'
                                     placeholder='Email'
-                                    
+
                                     onChange={(e) => { setEmail(e.target.value) }}
                                 />
                             </div>
@@ -110,7 +172,7 @@ const RegisterForm = () => {
                                     value={password}
                                     type='password'
                                     placeholder='Password'
-                                    
+
                                     onChange={(e) => { setPassword(e.target.value) }}
                                 />
                             </div>
@@ -125,17 +187,6 @@ const RegisterForm = () => {
                             <div >
                                 <button >register</button>
                             </div>
-
-                            {/* <div className={style.signIn_div} onClick={() => { signIn('google') }}>
-                                        <p>Sign in with Google</p>
-                                        <Image alt='' src="/g.jpg" width={25} height={25} />
-                                    </div>
-
-                                    <div className={style.signIn_div} onClick={() => { signIn('github') }}>
-                                        <p>Sign in with Github</p>
-                                        <Image alt='' src="/github.png" width={25} height={25} />
-                                    </div> */}
-
                             <div >
                                 <p>Dont have an account?<Link href='/login' >Login.</Link></p>
                             </div>
